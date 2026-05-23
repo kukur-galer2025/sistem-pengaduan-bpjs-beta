@@ -1,0 +1,58 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+@theme {
+  /* Palet BPJS Luxury */
+  --color-bpjs-dark: #073B4C;   /* Biru Sangat Tua (Background Sidebar/Header) */
+  --color-bpjs-blue: #118AB2;   /* Biru Utama (Trust) */
+  --color-bpjs-teal: #06D6A0;   /* Hijau Teal (Fresh/Layanan) */
+  --color-bpjs-light: #F8FAFC;  /* Abu sangat muda (Background Content) */
+  
+  /* Aksentuasi Luxury */
+  --color-lux-gold: #E9C46A;    /* Emas Meredup (Aksen) */
+  --color-lux-ivory: #FCFDF5;   /* Gading (Background Card Mewah) */
+
+  /* Font */
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Import Font Inter dari Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* Efek Global */
+@layer base {
+  body {
+    @apply bg-bpjs-light text-bpjs-dark antialiased tracking-tight;
+  }
+}
+
+/* Komponen Utilitas Kustom */
+/* Komponen Utilitas Kustom */
+@layer components {
+  /* Class dasar jika hanya ingin bentuk tombolnya saja */
+  .btn-luxury {
+    @apply inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-semibold rounded-xl transition-all duration-300 transform shadow-md;
+  }
+  
+  /* Class tombol utama (Utility btn-luxury langsung digabung ke sini) */
+  .btn-primary-grad {
+    @apply inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-semibold rounded-xl transition-all duration-300 transform shadow-md bg-gradient-to-r from-bpjs-blue to-bpjs-teal text-white hover:from-bpjs-dark hover:to-bpjs-dark hover:shadow-lg hover:-translate-y-0.5;
+  }
+  
+  /* Class tombol outline/emas (Utility btn-luxury langsung digabung ke sini) */
+  .btn-gold-outline {
+    @apply inline-flex items-center justify-center px-6 py-3 border text-base font-semibold rounded-xl transition-all duration-300 transform shadow-md border-lux-gold text-lux-gold hover:bg-lux-gold hover:text-bpjs-dark;
+  }
+  
+  .card-luxury {
+    @apply bg-white p-8 rounded-3xl shadow-sm border border-gray-100 transition-shadow duration-300 hover:shadow-xl hover:border-gray-200;
+  }
+  
+  .glass-morph {
+    @apply bg-white/70 backdrop-blur-lg border border-white/20;
+  }
+}
