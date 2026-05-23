@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Executive Dashboard - BPJS Care Management</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-bpjs-light flex h-screen overflow-hidden font-sans">
     
@@ -45,6 +46,16 @@
             <a href="{{ route('admin.kategori.index') }}" class="group flex items-center gap-3.5 px-4 py-3.5 rounded-xl transition-all {{ request()->routeIs('admin.kategori.*') ? 'bg-gradient-to-r from-bpjs-blue to-bpjs-teal text-white shadow-lg font-semibold' : 'hover:bg-slate-700/50 hover:text-white' }}">
                 <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('admin.kategori.*') ? 'text-white' : 'text-bpjs-teal group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
                 Kelola Kategori
+            </a>
+            
+            <a href="{{ route('admin.users.index') }}" class="group flex items-center gap-3.5 px-4 py-3.5 rounded-xl transition-all {{ request()->routeIs('admin.users.*') ? 'bg-gradient-to-r from-bpjs-blue to-bpjs-teal text-white shadow-lg font-semibold' : 'hover:bg-slate-700/50 hover:text-white' }}">
+                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('admin.users.*') ? 'text-white' : 'text-bpjs-teal group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                Manajemen Pengguna
+            </a>
+            
+            <a href="{{ route('admin.faq.index') }}" class="group flex items-center gap-3.5 px-4 py-3.5 rounded-xl transition-all {{ request()->routeIs('admin.faq.*') ? 'bg-gradient-to-r from-bpjs-blue to-bpjs-teal text-white shadow-lg font-semibold' : 'hover:bg-slate-700/50 hover:text-white' }}">
+                <svg class="w-5 h-5 shrink-0 {{ request()->routeIs('admin.faq.*') ? 'text-white' : 'text-bpjs-teal group-hover:text-white' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Pusat Bantuan (FAQ)
             </a>
         </nav>
         

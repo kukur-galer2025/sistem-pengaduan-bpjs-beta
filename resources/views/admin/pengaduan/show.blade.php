@@ -99,6 +99,85 @@
                     @endforeach
                 </div>
             </div>
+
+            <!-- Diskusi Tiket -->
+            <div class="card-luxury bg-white rounded-3xl shadow-xl border border-gray-100 mt-8 overflow-hidden">
+                <div class="p-6 md:p-8 border-b border-gray-100 bg-gray-50/50">
+                    <h3 class="text-xl font-extrabold text-bpjs-dark flex items-center gap-2">
+                        <svg class="w-6 h-6 text-bpjs-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                        Diskusi Tiket
+                    </h3>
+                </div>
+                
+                <div class="p-6 md:p-8 space-y-6 max-h-[500px] overflow-y-auto bg-slate-50/50">
+                    @forelse($complaint->comments as $comment)
+                        @if($comment->user_id == Auth::id())
+                            <!-- My Comment -->
+                            <div class="flex flex-col items-end w-full">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-[10px] font-bold text-gray-400">{{ $comment->created_at->format('d M H:i') }}</span>
+                                    <span class="text-xs font-bold text-bpjs-dark">Anda</span>
+                                </div>
+                                <div class="bg-bpjs-dark text-white px-5 py-3 rounded-2xl rounded-tr-sm shadow-sm max-w-[85%] sm:max-w-[70%]">
+                                    <p class="text-sm">{{ $comment->body }}</p>
+                                </div>
+                            </div>
+                        @else
+                            <!-- Other Comment -->
+                            <div class="flex flex-col items-start w-full">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-xs font-bold text-bpjs-dark">{{ $comment->user->name }} ({{ $comment->user->role }})</span>
+                                    <span class="text-[10px] font-bold text-gray-400">{{ $comment->created_at->format('d M H:i') }}</span>
+                                </div>
+                                <div class="bg-white border border-gray-200 text-gray-700 px-5 py-3 rounded-2xl rounded-tl-sm shadow-sm max-w-[85%] sm:max-w-[70%]">
+                                    <p class="text-sm">{{ $comment->body }}</p>
+                                </div>
+                            </div>
+                        @endif
+                    @empty
+                        <div class="text-center py-8">
+                            <svg class="w-12 h-12 text-gray-300 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <p class="text-sm text-gray-500 font-medium">Belum ada diskusi untuk tiket ini.</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                @if($complaint->status != 'selesai' && $complaint->status != 'ditolak')
+                <div class="p-6 border-t border-gray-100 bg-white">
+                    <form action="{{ route('admin.comments.store', $complaint->id) }}" method="POST" class="flex items-end gap-3">
+                        @csrf
+                        <div class="flex-1">
+                            <textarea name="body" rows="2" placeholder="Tulis balasan untuk pelapor..." class="w-full border-gray-200 rounded-xl focus:border-bpjs-teal focus:ring focus:ring-bpjs-teal/20 text-sm resize-none" required></textarea>
+                        </div>
+                        <button type="submit" class="bg-bpjs-teal hover:bg-bpjs-dark text-white w-12 h-12 rounded-xl flex items-center justify-center shadow transition-colors flex-shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
+                        </button>
+                    </form>
+                </div>
+                @else
+                <div class="p-4 bg-gray-100 text-center text-xs font-bold text-gray-500 uppercase">
+                    Tiket sudah ditutup, diskusi tidak lagi tersedia.
+                </div>
+                @endif
+            </div>
+
+            @if($complaint->status == 'selesai' && !is_null($complaint->rating))
+            <!-- Rating Result -->
+            <div class="card-luxury mt-8 bg-white rounded-3xl shadow-xl border border-amber-200 p-6 md:p-8">
+                <h3 class="text-xl font-extrabold text-bpjs-dark mb-4 flex items-center gap-2">
+                    <svg class="w-6 h-6 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                    Tingkat Kepuasan Pelapor
+                </h3>
+                <div class="flex items-center gap-1 mb-3">
+                    @for($i=1; $i<=5; $i++)
+                        <svg class="w-6 h-6 {{ $i <= $complaint->rating ? 'text-amber-400' : 'text-gray-200' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                    @endfor
+                </div>
+                @if($complaint->rating_review)
+                <p class="text-sm text-gray-600 italic bg-amber-50/50 p-4 rounded-xl border border-amber-100">"{{ $complaint->rating_review }}"</p>
+                @endif
+            </div>
+            @endif
         </div>
 
         <div class="lg:col-span-1">

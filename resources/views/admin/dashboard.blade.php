@@ -46,6 +46,22 @@
         </div>
     </div>
 
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="card-luxury">
+            <h4 class="text-lg font-bold text-bpjs-dark mb-4">Tren Pengaduan (Tahun Ini)</h4>
+            <div class="w-full h-72">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+        <div class="card-luxury">
+            <h4 class="text-lg font-bold text-bpjs-dark mb-4">Distribusi Berdasarkan Kategori</h4>
+            <div class="w-full h-72">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+
     <div class="card-luxury">
         <div class="flex items-center justify-between mb-8">
             <div>
@@ -105,4 +121,59 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Trend Chart
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        new Chart(trendCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
+                datasets: [{
+                    label: 'Jumlah Pengaduan',
+                    data: @json($trendData),
+                    borderColor: '#118AB2',
+                    backgroundColor: 'rgba(17, 138, 178, 0.1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                }
+            }
+        });
+
+        // Category Chart
+        const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+        new Chart(categoryCtx, {
+            type: 'doughnut',
+            data: {
+                labels: @json($categoryLabels),
+                datasets: [{
+                    data: @json($categoryData),
+                    backgroundColor: [
+                        '#118AB2', '#06D6A0', '#FFD166', '#EF476F', '#118AB2', '#073B4C'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right' }
+                }
+            }
+        });
+    });
+</script>
 @endsection

@@ -13,7 +13,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// ==========================================
+Route::get('/faq', function () {
+    $faqs = \App\Models\Faq::where('is_active', true)->latest()->get();
+    return view('faq', compact('faqs'));
+})->name('faq.public');
+
+Auth::routes();// ==========================================
 // AREA GUEST (Belum Login)
 // ==========================================
 Route::middleware('guest')->group(function () {
@@ -32,6 +37,12 @@ Route::middleware('auth')->group(function () {
     // Route untuk Logout (Bisa diakses Admin maupun Pelapor)
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+    // Route untuk Notifikasi
+    Route::post('/notifications/mark-all-read', function () {
+        auth()->user()->unreadNotifications->markAsRead();
+        return back();
+    })->name('notifications.markAllRead');
+
     // ------------------------------------------
     // AREA PELAPOR (Masyarakat)
     // ------------------------------------------
@@ -39,6 +50,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/pengaduan/create', [ComplaintController::class, 'create'])->name('pengaduan.create');
     Route::post('/pengaduan', [ComplaintController::class, 'store'])->name('pengaduan.store');
     Route::get('/pengaduan/{id}', [ComplaintController::class, 'show'])->name('pengaduan.show');
+    Route::post('/pengaduan/{id}/rating', [ComplaintController::class, 'storeRating'])->name('pengaduan.rating');
+    Route::post('/pengaduan/{id}/comments', [\App\Http\Controllers\TicketCommentController::class, 'store'])->name('comments.store');
 
     // ------------------------------------------
     // AREA ADMIN (Petugas BPJS)
@@ -56,6 +69,18 @@ Route::middleware('auth')->group(function () {
         
         Route::get('/pengaduan/{id}', [ComplaintManagementController::class, 'show'])->name('pengaduan.show');
         Route::post('/pengaduan/{id}/status', [ComplaintManagementController::class, 'updateStatus'])->name('pengaduan.update-status');
+        Route::post('/pengaduan/{id}/comments', [\App\Http\Controllers\TicketCommentController::class, 'store'])->name('comments.store');
+        
+        // Manajemen Pengguna
+        Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('users.index');
+        Route::post('/users/{id}/role', [\App\Http\Controllers\Admin\UserController::class, 'updateRole'])->name('users.update-role');
+        Route::delete('/users/{id}', [\App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('users.destroy');
+        
+        // Manajemen FAQ
+        Route::get('/faq', [\App\Http\Controllers\Admin\FaqController::class, 'index'])->name('faq.index');
+        Route::post('/faq', [\App\Http\Controllers\Admin\FaqController::class, 'store'])->name('faq.store');
+        Route::put('/faq/{id}', [\App\Http\Controllers\Admin\FaqController::class, 'update'])->name('faq.update');
+        Route::delete('/faq/{id}', [\App\Http\Controllers\Admin\FaqController::class, 'destroy'])->name('faq.destroy');
         
         // ==========================================
         // Manajemen Kategori (CRUD)

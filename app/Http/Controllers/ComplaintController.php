@@ -70,11 +70,31 @@ class ComplaintController extends Controller
     {
         $complaint = Complaint::where('id', $id)
             ->where('user_id', Auth::id()) // Proteksi: pastikan ini milik pelapor
-            ->with(['category', 'histories' => function($query) {
+            ->with(['category', 'comments.user', 'histories' => function($query) {
                 $query->latest(); // Urutkan history dari yang terbaru
             }])
             ->firstOrFail();
 
         return view('pelapor.pengaduan.show', compact('complaint'));
+    }
+
+    public function storeRating(Request $request, $id)
+    {
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'rating_review' => 'nullable|string',
+        ]);
+
+        $complaint = Complaint::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->where('status', 'selesai')
+            ->firstOrFail();
+
+        $complaint->update([
+            'rating' => $request->rating,
+            'rating_review' => $request->rating_review,
+        ]);
+
+        return back()->with('success', 'Terima kasih atas penilaian Anda!');
     }
 }

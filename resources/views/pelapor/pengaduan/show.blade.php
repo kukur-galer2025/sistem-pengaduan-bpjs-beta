@@ -74,6 +74,68 @@
                     @endif
                 </div>
             </div>
+
+            <!-- Diskusi Tiket -->
+            <div class="card-luxury bg-white rounded-3xl shadow-xl border border-gray-100 mt-8 overflow-hidden">
+                <div class="p-6 md:p-8 border-b border-gray-100 bg-gray-50/50">
+                    <h3 class="text-xl font-extrabold text-bpjs-dark flex items-center gap-2">
+                        <i class="ph-fill ph-chats-circle text-bpjs-blue text-2xl"></i>
+                        Diskusi Tiket
+                    </h3>
+                    <p class="text-sm text-gray-500 mt-1">Gunakan fitur ini untuk berkomunikasi dengan petugas BPJS mengenai laporan Anda.</p>
+                </div>
+                
+                <div class="p-6 md:p-8 space-y-6 max-h-[500px] overflow-y-auto bg-slate-50/50">
+                    @forelse($complaint->comments as $comment)
+                        @if($comment->user_id == Auth::id())
+                            <!-- My Comment -->
+                            <div class="flex flex-col items-end w-full">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-[10px] font-bold text-gray-400">{{ $comment->created_at->format('d M H:i') }}</span>
+                                    <span class="text-xs font-bold text-bpjs-dark">Anda</span>
+                                </div>
+                                <div class="bg-bpjs-blue text-white px-5 py-3 rounded-2xl rounded-tr-sm shadow-sm max-w-[85%] sm:max-w-[70%]">
+                                    <p class="text-sm">{{ $comment->body }}</p>
+                                </div>
+                            </div>
+                        @else
+                            <!-- Other Comment -->
+                            <div class="flex flex-col items-start w-full">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="text-xs font-bold text-bpjs-dark">{{ $comment->user->name }} ({{ $comment->user->role }})</span>
+                                    <span class="text-[10px] font-bold text-gray-400">{{ $comment->created_at->format('d M H:i') }}</span>
+                                </div>
+                                <div class="bg-white border border-gray-200 text-gray-700 px-5 py-3 rounded-2xl rounded-tl-sm shadow-sm max-w-[85%] sm:max-w-[70%]">
+                                    <p class="text-sm">{{ $comment->body }}</p>
+                                </div>
+                            </div>
+                        @endif
+                    @empty
+                        <div class="text-center py-8">
+                            <i class="ph-fill ph-chat-teardrop-slash text-4xl text-gray-300 mb-2"></i>
+                            <p class="text-sm text-gray-500 font-medium">Belum ada diskusi untuk tiket ini.</p>
+                        </div>
+                    @endforelse
+                </div>
+
+                @if($complaint->status != 'selesai' && $complaint->status != 'ditolak')
+                <div class="p-6 border-t border-gray-100 bg-white">
+                    <form action="{{ route('comments.store', $complaint->id) }}" method="POST" class="flex items-end gap-3">
+                        @csrf
+                        <div class="flex-1">
+                            <textarea name="body" rows="2" placeholder="Tulis balasan atau pertanyaan Anda..." class="w-full border-gray-200 rounded-xl focus:border-bpjs-blue focus:ring focus:ring-bpjs-blue/20 text-sm resize-none" required></textarea>
+                        </div>
+                        <button type="submit" class="bg-bpjs-dark hover:bg-bpjs-blue text-white w-12 h-12 rounded-xl flex items-center justify-center shadow transition-colors flex-shrink-0">
+                            <i class="ph-fill ph-paper-plane-right text-xl"></i>
+                        </button>
+                    </form>
+                </div>
+                @else
+                <div class="p-4 bg-gray-100 text-center text-xs font-bold text-gray-500 uppercase">
+                    Tiket sudah ditutup, diskusi tidak lagi tersedia.
+                </div>
+                @endif
+            </div>
         </div>
 
         <div class="lg:col-span-1">
@@ -146,6 +208,52 @@
                     @endforeach
                 </div>
             </div>
+
+            @if($complaint->status == 'selesai' && is_null($complaint->rating))
+            <!-- Rating Form -->
+            <div data-aos="fade-left" data-aos-delay="300" class="card-luxury mt-8 bg-gradient-to-br from-bpjs-dark to-slate-800 rounded-3xl shadow-xl border border-gray-100 p-6 md:p-8 text-white">
+                <h3 class="text-xl font-extrabold mb-2 flex items-center gap-2">
+                    <i class="ph-fill ph-star text-amber-400"></i>
+                    Beri Penilaian
+                </h3>
+                <p class="text-sm text-gray-300 mb-6">Seberapa puas Anda dengan penanganan laporan ini?</p>
+                
+                <form action="{{ route('pengaduan.rating', $complaint->id) }}" method="POST" class="space-y-4">
+                    @csrf
+                    <div class="flex items-center gap-2">
+                        @for($i=1; $i<=5; $i++)
+                        <label class="cursor-pointer group relative">
+                            <input type="radio" name="rating" value="{{ $i }}" class="peer hidden" required>
+                            <i class="ph-fill ph-star text-3xl text-gray-500 peer-checked:text-amber-400 group-hover:text-amber-400 transition-colors"></i>
+                            <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition whitespace-nowrap">{{ $i }} Bintang</div>
+                        </label>
+                        @endfor
+                    </div>
+                    <div>
+                        <textarea name="rating_review" rows="3" placeholder="Tuliskan ulasan Anda mengenai pelayanan petugas (Opsional)..." class="w-full bg-slate-700/50 border border-slate-600 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-bpjs-teal outline-none transition text-white placeholder-gray-400"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-bpjs-teal hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow transition">
+                        Kirim Penilaian
+                    </button>
+                </form>
+            </div>
+            @elseif($complaint->status == 'selesai' && !is_null($complaint->rating))
+            <!-- Rating Result -->
+            <div data-aos="fade-left" data-aos-delay="300" class="card-luxury mt-8 bg-white rounded-3xl shadow-xl border border-amber-200 p-6 md:p-8">
+                <h3 class="text-xl font-extrabold text-bpjs-dark mb-4 flex items-center gap-2">
+                    <i class="ph-fill ph-star text-amber-400"></i>
+                    Penilaian Anda
+                </h3>
+                <div class="flex items-center gap-1 mb-3">
+                    @for($i=1; $i<=5; $i++)
+                        <i class="ph-fill ph-star text-2xl {{ $i <= $complaint->rating ? 'text-amber-400' : 'text-gray-200' }}"></i>
+                    @endfor
+                </div>
+                @if($complaint->rating_review)
+                <p class="text-sm text-gray-600 italic bg-amber-50/50 p-4 rounded-xl border border-amber-100">"{{ $complaint->rating_review }}"</p>
+                @endif
+            </div>
+            @endif
         </div>
         
     </div>

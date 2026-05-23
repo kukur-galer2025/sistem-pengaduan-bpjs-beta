@@ -46,4 +46,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(ComplaintHistory::class, 'petugas_id');
     }
+
+    /**
+     * Relasi: Satu user bisa mengirim banyak komentar.
+     */
+    public function ticketComments(): HasMany
+    {
+        return $this->hasMany(TicketComment::class);
+    }
 }

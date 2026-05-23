@@ -19,7 +19,9 @@ class Complaint extends Model
         'judul', 
         'kronologi', 
         'lampiran_path', 
-        'status'
+        'status',
+        'rating',
+        'rating_review'
     ];
 
     /**
@@ -44,5 +46,13 @@ class Complaint extends Model
     public function histories(): HasMany
     {
         return $this->hasMany(ComplaintHistory::class);
+    }
+
+    /**
+     * Relasi: Satu pengaduan memiliki banyak komentar diskusi.
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(TicketComment::class);
     }
 }

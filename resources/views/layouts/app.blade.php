@@ -34,7 +34,7 @@
                                 <i class="ph-fill ph-clock-counter-clockwise text-lg"></i> Riwayat Laporan
                             </a>
                         @endauth
-                        <a href="#" class="flex items-center gap-1.5 text-sm font-bold text-gray-500 hover:text-bpjs-blue transition">
+                        <a href="{{ route('faq.public') }}" class="flex items-center gap-1.5 text-sm font-bold text-gray-500 hover:text-bpjs-blue transition">
                             <i class="ph-fill ph-question text-lg"></i> F.A.Q
                         </a>
                     </nav>
@@ -51,6 +51,40 @@
 
                     <div class="flex items-center gap-3">
                         @auth
+                            <!-- Notification Bell -->
+                            <div class="relative" id="notif-dropdown-container">
+                                <button onclick="toggleNotifDropdown()" class="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-slate-100 transition focus:outline-none">
+                                    <i class="ph-fill ph-bell text-gray-500 text-xl"></i>
+                                    @if(Auth::user()->unreadNotifications->count() > 0)
+                                        <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white animate-pulse"></span>
+                                    @endif
+                                </button>
+
+                                <div id="notif-panel" class="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 py-2 hidden z-50 transform opacity-0 scale-95 transition-all duration-200 origin-top-right max-h-96 overflow-y-auto">
+                                    <div class="px-5 py-3 border-b border-gray-50 flex items-center justify-between sticky top-0 bg-white/90 backdrop-blur z-10">
+                                        <p class="text-[10px] font-bold text-gray-400 tracking-widest uppercase mb-0">Notifikasi</p>
+                                        @if(Auth::user()->unreadNotifications->count() > 0)
+                                            <form action="{{ route('notifications.markAllRead') }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="text-[10px] font-bold text-bpjs-blue hover:underline">Tandai Dibaca</button>
+                                            </form>
+                                        @endif
+                                    </div>
+
+                                    @forelse(Auth::user()->notifications()->limit(5)->get() as $notification)
+                                        <a href="{{ route('pengaduan.show', $notification->data['complaint_id']) }}" class="block px-5 py-3 hover:bg-slate-50 transition border-b border-gray-50 last:border-0 {{ $notification->read_at ? 'opacity-60' : 'bg-blue-50/30' }}">
+                                            <p class="text-xs font-bold text-bpjs-dark mb-1">{{ $notification->data['message'] }}</p>
+                                            <p class="text-[10px] text-gray-400 font-medium">{{ $notification->created_at->diffForHumans() }}</p>
+                                        </a>
+                                    @empty
+                                        <div class="px-5 py-8 text-center">
+                                            <i class="ph-fill ph-bell-slash text-3xl text-gray-200 mb-2"></i>
+                                            <p class="text-xs font-bold text-gray-400">Tidak ada notifikasi</p>
+                                        </div>
+                                    @endforelse
+                                </div>
+                            </div>
+
                             <div class="relative" id="profile-dropdown-container">
                                 <button onclick="toggleDropdown()" class="flex items-center gap-2 md:gap-3 bg-white pl-1.5 pr-3 md:pl-2 md:pr-4 py-1.5 rounded-full border border-gray-200 shadow-sm hover:shadow-md transition focus:outline-none focus:ring-2 focus:ring-bpjs-blue/50">
                                     <div class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-r from-bpjs-dark to-slate-800 flex items-center justify-center text-white text-[10px] md:text-xs font-bold shadow-inner shrink-0">
@@ -112,7 +146,7 @@
                     <i class="ph-fill ph-clock-counter-clockwise text-3xl text-bpjs-teal"></i> Riwayat Laporan
                 </a>
             @endauth
-            <a href="#" class="flex items-center gap-4 text-lg font-bold text-gray-600 hover:text-bpjs-blue transition">
+            <a href="{{ route('faq.public') }}" class="flex items-center gap-4 text-lg font-bold text-gray-600 hover:text-bpjs-blue transition">
                 <i class="ph-fill ph-question text-3xl text-bpjs-teal"></i> F.A.Q
             </a>
         </nav>
@@ -213,8 +247,12 @@
         const mobileMenu = document.getElementById('mobile-menu');
         const hamburgerIcon = document.getElementById('hamburger-icon');
 
+        const notifPanel = document.getElementById('notif-panel');
+        const notifContainer = document.getElementById('notif-dropdown-container');
+
         function toggleDropdown() {
             if (dropdownPanel.classList.contains('hidden')) {
+                closeNotifDropdown(); // close other
                 dropdownPanel.classList.remove('hidden');
                 setTimeout(() => {
                     dropdownPanel.classList.remove('opacity-0', 'scale-95');
@@ -223,6 +261,29 @@
                 }, 10);
             } else {
                 closeDropdown();
+            }
+        }
+
+        function toggleNotifDropdown() {
+            if (notifPanel.classList.contains('hidden')) {
+                closeDropdown(); // close other
+                notifPanel.classList.remove('hidden');
+                setTimeout(() => {
+                    notifPanel.classList.remove('opacity-0', 'scale-95');
+                    notifPanel.classList.add('opacity-100', 'scale-100');
+                }, 10);
+            } else {
+                closeNotifDropdown();
+            }
+        }
+
+        function closeNotifDropdown() {
+            if(notifPanel && !notifPanel.classList.contains('hidden')) {
+                notifPanel.classList.remove('opacity-100', 'scale-100');
+                notifPanel.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    notifPanel.classList.add('hidden');
+                }, 200); 
             }
         }
 
@@ -241,7 +302,6 @@
         function toggleMobileMenu() {
             if (mobileMenu.classList.contains('hidden')) {
                 mobileMenu.classList.remove('hidden');
-                // Allow browser to render display:block before translating
                 setTimeout(() => {
                     mobileMenu.classList.remove('-translate-y-full');
                     hamburgerIcon.classList.replace('ph-list', 'ph-x');
@@ -249,7 +309,6 @@
             } else {
                 mobileMenu.classList.add('-translate-y-full');
                 hamburgerIcon.classList.replace('ph-x', 'ph-list');
-                
                 setTimeout(() => {
                     mobileMenu.classList.add('hidden');
                 }, 300);
@@ -260,6 +319,9 @@
         window.addEventListener('click', function(e) {
             if (dropdownContainer && !dropdownContainer.contains(e.target)) {
                 closeDropdown();
+            }
+            if (notifContainer && !notifContainer.contains(e.target)) {
+                closeNotifDropdown();
             }
         });
     </script>

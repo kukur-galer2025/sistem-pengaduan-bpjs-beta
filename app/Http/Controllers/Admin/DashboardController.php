@@ -23,8 +23,30 @@ class DashboardController extends Controller
             ->take(5)
             ->get();
 
+        // Data Grafik: Tren Bulanan
+        $monthlyTrends = Complaint::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+            ->whereYear('created_at', date('Y'))
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('count', 'month')->toArray();
+
+        $trendData = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $trendData[] = $monthlyTrends[$i] ?? 0;
+        }
+
+        // Data Grafik: Distribusi Kategori
+        $categoryDistribution = Complaint::join('categories', 'complaints.category_id', '=', 'categories.id')
+            ->selectRaw('categories.nama_kategori as name, COUNT(complaints.id) as count')
+            ->groupBy('categories.id', 'categories.nama_kategori')
+            ->get();
+
+        $categoryLabels = $categoryDistribution->pluck('name');
+        $categoryData = $categoryDistribution->pluck('count');
+
         return view('admin.dashboard', compact(
-            'totalPengaduan', 'menunggu', 'diproses', 'selesai', 'ditolak', 'recentComplaints'
+            'totalPengaduan', 'menunggu', 'diproses', 'selesai', 'ditolak', 'recentComplaints',
+            'trendData', 'categoryLabels', 'categoryData'
         ));
     }
 }

@@ -8,6 +8,7 @@ use App\Models\ComplaintHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Notifications\ComplaintStatusUpdated;
 
 class ComplaintManagementController extends Controller
 {
@@ -28,7 +29,7 @@ class ComplaintManagementController extends Controller
 
     public function show($id)
     {
-        $complaint = Complaint::with(['user', 'category', 'histories.petugas'])
+        $complaint = Complaint::with(['user', 'category', 'histories.petugas', 'comments.user'])
             ->findOrFail($id);
 
         return view('admin.pengaduan.show', compact('complaint'));
@@ -55,6 +56,9 @@ class ComplaintManagementController extends Controller
             'status' => $request->status,
             'catatan' => $request->catatan,
         ]);
+
+        // Kirim notifikasi ke pelapor
+        $complaint->user->notify(new ComplaintStatusUpdated($complaint));
 
         return redirect()->route('admin.pengaduan.show', $id)
             ->with('success', 'Status pengaduan berhasil diperbarui.');
