@@ -53,18 +53,21 @@
                         <i class="ph-fill ph-paperclip text-bpjs-teal text-lg"></i> Dokumen Lampiran
                     </h4>
                     
-                    @if($complaint->lampiran_path)
-                        <div class="flex flex-col sm:flex-row sm:items-center p-4 bg-white border border-gray-200 rounded-2xl shadow-sm max-w-lg gap-4 transition hover:border-bpjs-blue hover:shadow-md">
-                            <div class="w-14 h-14 bg-blue-50 text-bpjs-blue rounded-xl flex items-center justify-center flex-shrink-0">
-                                <i class="ph-fill ph-file-text text-3xl"></i>
+                    @if($complaint->attachments->count() > 0)
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            @foreach($complaint->attachments as $attachment)
+                            <div class="flex items-center p-4 bg-white border border-gray-200 rounded-2xl shadow-sm gap-4 transition hover:border-bpjs-blue hover:shadow-md">
+                                <div class="w-12 h-12 bg-blue-50 text-bpjs-blue rounded-xl flex items-center justify-center flex-shrink-0">
+                                    <i class="ph-fill ph-file-text text-2xl"></i>
+                                </div>
+                                <div class="flex-1 overflow-hidden">
+                                    <p class="text-sm font-bold text-gray-800 truncate" title="{{ $attachment->file_name }}">{{ $attachment->file_name }}</p>
+                                </div>
+                                <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank" class="w-10 h-10 bg-bpjs-dark hover:bg-bpjs-blue text-white rounded-xl transition shadow flex items-center justify-center flex-shrink-0" title="Lihat Dokumen">
+                                    <i class="ph-bold ph-eye text-lg"></i>
+                                </a>
                             </div>
-                            <div class="flex-1 overflow-hidden">
-                                <p class="text-sm font-bold text-gray-800 truncate">Bukti_Lampiran_Tiket_{{ substr($complaint->kode_tiket, -4) }}</p>
-                                <p class="text-xs text-gray-500 font-medium mt-0.5">Disertakan oleh Pelapor</p>
-                            </div>
-                            <a href="{{ asset('storage/' . $complaint->lampiran_path) }}" target="_blank" class="px-5 py-2.5 bg-bpjs-dark hover:bg-bpjs-blue text-white text-sm font-bold rounded-xl transition shadow flex items-center justify-center gap-2 flex-shrink-0">
-                                <i class="ph-bold ph-eye text-lg"></i> Lihat
-                            </a>
+                            @endforeach
                         </div>
                     @else
                         <div class="flex items-center gap-3 text-gray-400 italic text-sm bg-white p-5 rounded-2xl border border-gray-100 border-dashed">

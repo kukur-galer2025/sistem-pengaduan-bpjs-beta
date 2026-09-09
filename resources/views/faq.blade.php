@@ -18,8 +18,8 @@
                 <i class="ph-bold ph-caret-down text-gray-400 transition-transform duration-300" :class="{ 'rotate-180 text-bpjs-blue': expanded }"></i>
             </button>
             <div x-show="expanded" x-collapse>
-                <div class="p-6 pt-0 text-gray-600 leading-relaxed border-t border-gray-50">
-                    {{ $faq->answer }}
+                <div class="p-6 pt-0 text-gray-600 leading-relaxed border-t border-gray-50 prose max-w-none prose-blue">
+                    {!! $faq->answer !!}
                 </div>
             </div>
         </div>

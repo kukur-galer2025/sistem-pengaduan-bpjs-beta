@@ -14,17 +14,32 @@ class ComplaintManagementController extends Controller
 {
     public function index(Request $request)
     {
-        // Filter status jika ada parameter (opsional)
+        // Filter parameters
         $status = $request->query('status');
+        $category_id = $request->query('category_id');
+        $start_date = $request->query('start_date');
+        $end_date = $request->query('end_date');
 
         $complaints = Complaint::with(['user', 'category'])
             ->when($status, function ($query, $status) {
                 return $query->where('status', $status);
             })
+            ->when($category_id, function ($query, $category_id) {
+                return $query->where('category_id', $category_id);
+            })
+            ->when($start_date, function ($query, $start_date) {
+                return $query->whereDate('created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query, $end_date) {
+                return $query->whereDate('created_at', '<=', $end_date);
+            })
             ->latest()
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
 
-        return view('admin.pengaduan.index', compact('complaints'));
+        $categories = \App\Models\Category::all();
+
+        return view('admin.pengaduan.index', compact('complaints', 'categories'));
     }
 
     public function show($id)

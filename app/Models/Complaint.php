@@ -51,8 +51,13 @@ class Complaint extends Model
     /**
      * Relasi: Satu pengaduan memiliki banyak komentar diskusi.
      */
-    public function comments(): HasMany
+    public function comments()
     {
-        return $this->hasMany(TicketComment::class);
+        return $this->hasMany(TicketComment::class)->orderBy('created_at', 'asc');
+    }
+
+    public function attachments()
+    {
+        return $this->hasMany(ComplaintAttachment::class);
     }
 }

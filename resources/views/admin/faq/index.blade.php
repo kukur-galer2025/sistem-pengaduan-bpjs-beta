@@ -3,6 +3,8 @@
 @section('page_title', 'Kelola FAQ')
 
 @section('content')
+<!-- Quill CSS -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     <div class="lg:col-span-1">
         <div class="card-luxury sticky top-28">
@@ -14,8 +16,11 @@
                     <input type="text" name="question" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-bpjs-blue outline-none transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Jawaban</label>
-                    <textarea name="answer" rows="5" required class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-bpjs-blue outline-none transition"></textarea>
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Jawaban (Panduan/Artikel)</label>
+                    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                        <div id="editor-container" class="h-48 text-sm"></div>
+                    </div>
+                    <textarea name="answer" id="answer" class="hidden" required></textarea>
                 </div>
                 <div class="flex items-center gap-2">
                     <input type="checkbox" name="is_active" id="is_active" value="1" checked class="w-4 h-4 text-bpjs-blue rounded border-gray-300 focus:ring-bpjs-blue">
@@ -56,7 +61,7 @@
                                 </form>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-600 mb-4">{{ $faq->answer }}</p>
+                        <div class="text-sm text-gray-600 mb-4 prose prose-sm max-w-none prose-blue">{!! $faq->answer !!}</div>
                     </div>
                 @empty
                     <div class="text-center py-10 bg-gray-50 rounded-2xl border border-gray-100 border-dashed">
@@ -72,4 +77,33 @@
         </div>
     </div>
 </div>
+
+<!-- Quill JS -->
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var quill = new Quill('#editor-container', {
+            theme: 'snow',
+            placeholder: 'Tuliskan panduan atau langkah-langkah di sini...',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['link', 'clean']
+                ]
+            }
+        });
+
+        var form = document.querySelector('form');
+        form.onsubmit = function() {
+            var answer = document.querySelector('textarea[name=answer]');
+            // Validate if empty
+            if (quill.getText().trim().length === 0) {
+                alert('Jawaban tidak boleh kosong.');
+                return false;
+            }
+            answer.value = quill.root.innerHTML;
+        };
+    });
+</script>
 @endsection

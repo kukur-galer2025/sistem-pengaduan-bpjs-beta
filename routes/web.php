@@ -17,8 +17,7 @@ Route::get('/faq', function () {
     $faqs = \App\Models\Faq::where('is_active', true)->latest()->get();
     return view('faq', compact('faqs'));
 })->name('faq.public');
-
-Auth::routes();// ==========================================
+// ==========================================
 // AREA GUEST (Belum Login)
 // ==========================================
 Route::middleware('guest')->group(function () {

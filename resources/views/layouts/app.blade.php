@@ -8,34 +8,53 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Modern Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        /* Smooth scrolling */
+        html { scroll-behavior: smooth; }
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-slate-50 flex flex-col min-h-screen font-sans text-slate-800 antialiased">
+<body class="bg-slate-50 flex flex-col min-h-screen text-slate-800 antialiased selection:bg-bpjs-blue/20 selection:text-bpjs-blue">
     
-    <header data-aos="fade-down" data-aos-duration="800" class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-100">
+    <header data-aos="fade-down" data-aos-duration="800" class="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-gray-200/50 shadow-[0_4px_30px_rgba(0,0,0,0.03)] transition-all duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-20">
                 
-                <div class="flex items-center gap-10">
-                    <a href="/" class="flex items-center gap-2.5 group">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-br from-bpjs-blue to-bpjs-teal shadow-inner flex items-center justify-center transform group-hover:scale-105 transition-transform duration-300">
+                <div class="flex items-center gap-12">
+                    <a href="/" class="flex items-center gap-3 group">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-bpjs-blue to-bpjs-teal shadow-lg shadow-bpjs-blue/20 flex items-center justify-center transform group-hover:-translate-y-0.5 group-hover:rotate-3 transition-all duration-300">
                             <i class="ph-fill ph-shield-check text-white text-2xl"></i>
                         </div>
-                        <span class="text-2xl font-black text-bpjs-dark tracking-tighter">BPJS<span class="text-bpjs-blue">Care</span></span>
+                        <span class="text-2xl font-extrabold text-bpjs-dark tracking-tight">BPJS<span class="text-bpjs-blue font-black">Care</span></span>
                     </a>
 
                     <nav class="hidden lg:flex items-center gap-8">
-                        <a href="/" class="flex items-center gap-1.5 text-sm font-bold text-gray-500 hover:text-bpjs-blue transition">
-                            <i class="ph-fill ph-house text-lg"></i> Beranda
+                        <a href="/" class="group relative flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-bpjs-dark transition-colors py-2">
+                            <i class="ph-fill ph-house text-lg text-gray-400 group-hover:text-bpjs-blue transition-colors"></i> Beranda
+                            <span class="absolute inset-x-0 bottom-0 h-0.5 bg-bpjs-blue transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 rounded-full"></span>
                         </a>
                         @auth
-                            <a href="{{ route('pengaduan.index') }}" class="flex items-center gap-1.5 text-sm font-bold text-gray-500 hover:text-bpjs-blue transition">
-                                <i class="ph-fill ph-clock-counter-clockwise text-lg"></i> Riwayat Laporan
+                            <a href="{{ route('pengaduan.index') }}" class="group relative flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-bpjs-dark transition-colors py-2">
+                                <i class="ph-fill ph-clock-counter-clockwise text-lg text-gray-400 group-hover:text-bpjs-blue transition-colors"></i> Riwayat Laporan
+                                <span class="absolute inset-x-0 bottom-0 h-0.5 bg-bpjs-blue transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 rounded-full"></span>
                             </a>
                         @endauth
-                        <a href="{{ route('faq.public') }}" class="flex items-center gap-1.5 text-sm font-bold text-gray-500 hover:text-bpjs-blue transition">
-                            <i class="ph-fill ph-question text-lg"></i> F.A.Q
+                        <a href="{{ route('faq.public') }}" class="group relative flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-bpjs-dark transition-colors py-2">
+                            <i class="ph-fill ph-question text-lg text-gray-400 group-hover:text-bpjs-blue transition-colors"></i> F.A.Q
+                            <span class="absolute inset-x-0 bottom-0 h-0.5 bg-bpjs-blue transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300 rounded-full"></span>
                         </a>
                     </nav>
                 </div>
@@ -156,16 +175,19 @@
         @yield('content')
     </main>
 
-    <footer class="bg-bpjs-dark text-slate-300 mt-auto border-t-[6px] border-bpjs-teal">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <footer class="bg-slate-900 text-slate-300 mt-auto relative overflow-hidden">
+        <!-- Accent Line -->
+        <div class="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-bpjs-blue via-bpjs-teal to-bpjs-blue"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 lg:gap-8">
                 
                 <div data-aos="fade-right" class="md:col-span-2 pr-0 lg:pr-12">
-                    <a href="/" class="flex items-center gap-2 mb-6">
-                        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-bpjs-blue to-bpjs-teal flex items-center justify-center">
-                            <i class="ph-fill ph-shield-check text-white text-lg"></i>
+                    <a href="/" class="flex items-center gap-3 mb-6 group">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-bpjs-blue to-bpjs-teal flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                            <i class="ph-fill ph-shield-check text-white text-xl"></i>
                         </div>
-                        <span class="text-2xl font-black text-white tracking-tighter">BPJS Care Portal</span>
+                        <span class="text-2xl font-black text-white tracking-tight">BPJS<span class="text-slate-400">Care</span></span>
                     </a>
                     <p class="text-sm text-slate-400 leading-relaxed max-w-md">
                         Portal pengaduan resmi dan terintegrasi. Komitmen kami untuk menghadirkan transparansi dan perbaikan berkelanjutan dalam pelayanan kesehatan masyarakat Indonesia.
@@ -193,25 +215,28 @@
                                 <span class="text-amber-400 font-black text-xl tracking-widest">165</span>
                             </div>
                         </li>
-                        <li class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-bpjs-teal flex-shrink-0">
-                                <i class="ph-fill ph-envelope-simple text-lg"></i>
+                        <li class="flex items-center gap-4 group">
+                            <div class="w-10 h-10 rounded-full bg-white/5 group-hover:bg-bpjs-teal/20 flex items-center justify-center text-bpjs-teal transition-colors flex-shrink-0">
+                                <i class="ph-fill ph-envelope-simple text-xl"></i>
                             </div>
-                            <span>info@bpjs-kesehatan.go.id</span>
+                            <span class="text-slate-300 group-hover:text-white transition-colors">info@bpjs-kesehatan.go.id</span>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <div class="bg-black/40 border-t border-white/5">
+        <div class="bg-black/50 border-t border-white/5 relative z-10">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-xs text-slate-500 font-semibold">
+                <p class="text-xs text-slate-500 font-medium">
                     &copy; {{ date('Y') }} BPJS Kesehatan. Hak Cipta Dilindungi Undang-Undang.
                 </p>
-                <p class="text-xs text-slate-600 font-bold tracking-wider">
-                    EXECUTIVE CARE SYSTEM
-                </p>
+                <div class="flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <p class="text-xs text-slate-400 font-bold tracking-widest uppercase">
+                        Sistem Beroperasi Normal
+                    </p>
+                </div>
             </div>
         </div>
     </footer>

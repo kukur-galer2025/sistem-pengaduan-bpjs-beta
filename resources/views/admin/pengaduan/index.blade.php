@@ -5,20 +5,51 @@
 @section('content')
 <div class="card-luxury">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
-        <div class="flex items-center gap-4 overflow-x-auto pb-2">
-            <a href="{{ route('admin.pengaduan.index') }}" class="px-5 py-2 rounded-full text-xs font-bold transition {{ !request('status') ? 'bg-bpjs-dark text-white shadow-lg' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
-                Semua
-            </a>
-            <a href="{{ route('admin.pengaduan.index', ['status' => 'menunggu']) }}" class="px-5 py-2 rounded-full text-xs font-bold transition {{ request('status') == 'menunggu' ? 'bg-amber-500 text-white shadow-lg' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
-                Menunggu
-            </a>
-            <a href="{{ route('admin.pengaduan.index', ['status' => 'diproses']) }}" class="px-5 py-2 rounded-full text-xs font-bold transition {{ request('status') == 'diproses' ? 'bg-bpjs-blue text-white shadow-lg' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
-                Diproses
-            </a>
-            <a href="{{ route('admin.pengaduan.index', ['status' => 'selesai']) }}" class="px-5 py-2 rounded-full text-xs font-bold transition {{ request('status') == 'selesai' ? 'bg-bpjs-teal text-white shadow-lg' : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}">
-                Selesai
-            </a>
-        </div>
+        <form action="{{ route('admin.pengaduan.index') }}" method="GET" class="w-full flex flex-col xl:flex-row xl:items-end gap-4">
+            
+            <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Status</label>
+                    <select name="status" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-bpjs-blue outline-none transition">
+                        <option value="">Semua Status</option>
+                        <option value="menunggu" {{ request('status') == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
+                        <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
+                        <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                        <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Kategori</label>
+                    <select name="category_id" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-bpjs-blue outline-none transition">
+                        <option value="">Semua Kategori</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>{{ $category->nama_kategori }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Dari Tanggal</label>
+                    <input type="date" name="start_date" value="{{ request('start_date') }}" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-bpjs-blue outline-none transition">
+                </div>
+                
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Sampai Tanggal</label>
+                    <input type="date" name="end_date" value="{{ request('end_date') }}" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-bpjs-blue outline-none transition">
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 mt-4 xl:mt-0 shrink-0">
+                <button type="submit" class="bg-bpjs-blue hover:bg-bpjs-dark text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-sm transition flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
+                    Terapkan Filter
+                </button>
+                <a href="{{ route('admin.pengaduan.index') }}" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-2.5 rounded-xl text-sm font-bold shadow-sm transition">
+                    Reset
+                </a>
+            </div>
+        </form>
         
         <div class="flex items-center gap-4">
             <div class="text-sm text-gray-400 font-medium">

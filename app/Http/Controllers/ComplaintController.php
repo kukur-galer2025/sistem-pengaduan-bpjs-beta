@@ -33,14 +33,9 @@ class ComplaintController extends Controller
             'category_id' => 'required|exists:categories,id',
             'judul' => 'required|string|max:255',
             'kronologi' => 'required|string',
-            // Diperbarui: max 20480 setara dengan 20 MB
-            'lampiran' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:20480', 
+            'lampiran' => 'nullable|array|max:5', 
+            'lampiran.*' => 'file|mimes:jpg,jpeg,png,pdf|max:20480', 
         ]);
-
-        $lampiranPath = null;
-        if ($request->hasFile('lampiran')) {
-            $lampiranPath = $request->file('lampiran')->store('lampiran_pengaduan', 'public');
-        }
 
         // Generate Kode Tiket (Contoh: BPJS-20260418-XYZ1)
         $kodeTiket = 'BPJS-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -4));
@@ -51,9 +46,18 @@ class ComplaintController extends Controller
             'kode_tiket' => $kodeTiket,
             'judul' => $request->judul,
             'kronologi' => $request->kronologi,
-            'lampiran_path' => $lampiranPath,
             'status' => 'menunggu',
         ]);
+
+        if ($request->hasFile('lampiran')) {
+            foreach ($request->file('lampiran') as $file) {
+                $path = $file->store('lampiran_pengaduan', 'public');
+                $complaint->attachments()->create([
+                    'file_name' => $file->getClientOriginalName(),
+                    'file_path' => $path,
+                ]);
+            }
+        }
 
         // Simpan log awal di tabel histories
         ComplaintHistory::create([
@@ -70,7 +74,7 @@ class ComplaintController extends Controller
     {
         $complaint = Complaint::where('id', $id)
             ->where('user_id', Auth::id()) // Proteksi: pastikan ini milik pelapor
-            ->with(['category', 'comments.user', 'histories' => function($query) {
+            ->with(['category', 'comments.user', 'attachments', 'histories' => function($query) {
                 $query->latest(); // Urutkan history dari yang terbaru
             }])
             ->firstOrFail();
