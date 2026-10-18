@@ -9,7 +9,7 @@
     <div class="lg:col-span-1">
         <div class="card-luxury sticky top-28">
             <h4 class="text-lg font-bold text-bpjs-dark mb-4">Tambah FAQ Baru</h4>
-            <form action="{{ route('admin.faq.store') }}" method="POST" class="space-y-4">
+            <form id="faq-form" action="{{ route('admin.faq.store') }}" method="POST" class="space-y-4">
                 @csrf
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Pertanyaan</label>
@@ -94,16 +94,18 @@
             }
         });
 
-        var form = document.querySelector('form');
-        form.onsubmit = function() {
-            var answer = document.querySelector('textarea[name=answer]');
-            // Validate if empty
-            if (quill.getText().trim().length === 0) {
-                alert('Jawaban tidak boleh kosong.');
-                return false;
-            }
-            answer.value = quill.root.innerHTML;
-        };
+        var form = document.getElementById('faq-form');
+        if (form) {
+            form.onsubmit = function() {
+                var answer = document.querySelector('textarea[name=answer]');
+                // Validate if empty
+                if (quill.getText().trim().length === 0) {
+                    alert('Jawaban tidak boleh kosong.');
+                    return false;
+                }
+                answer.value = quill.root.innerHTML;
+            };
+        }
     });
 </script>
 @endsection
