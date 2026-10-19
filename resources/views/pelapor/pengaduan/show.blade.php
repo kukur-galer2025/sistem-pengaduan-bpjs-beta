@@ -141,8 +141,8 @@
             </div>
         </div>
 
-        <div class="lg:col-span-1">
-            <div data-aos="fade-left" data-aos-delay="200" class="card-luxury sticky top-28 bg-white rounded-3xl shadow-xl border border-gray-100 p-6 md:p-8">
+        <div class="lg:col-span-1 space-y-6">
+            <div data-aos="fade-left" data-aos-delay="200" class="card-luxury bg-white rounded-3xl shadow-xl border border-gray-100 p-6 md:p-8">
                 <h3 class="text-xl font-extrabold text-bpjs-dark mb-8 flex items-center gap-2 pb-4 border-b border-gray-100">
                     <div class="w-8 h-8 rounded-full bg-bpjs-teal/10 flex items-center justify-center text-bpjs-teal">
                         <i class="ph-fill ph-pulse"></i>
@@ -214,7 +214,7 @@
 
             @if($complaint->status == 'selesai' && is_null($complaint->rating))
             <!-- Rating Form -->
-            <div data-aos="fade-left" data-aos-delay="300" class="card-luxury mt-8 bg-gradient-to-br from-bpjs-dark to-slate-800 rounded-3xl shadow-xl border border-gray-100 p-6 md:p-8 text-white">
+            <div data-aos="fade-left" data-aos-delay="300" class="card-luxury bg-gradient-to-br from-bpjs-dark to-slate-800 rounded-3xl shadow-xl border border-gray-100 p-6 md:p-8 text-white">
                 <h3 class="text-xl font-extrabold mb-2 flex items-center gap-2">
                     <i class="ph-fill ph-star text-amber-400"></i>
                     Beri Penilaian
@@ -242,7 +242,7 @@
             </div>
             @elseif($complaint->status == 'selesai' && !is_null($complaint->rating))
             <!-- Rating Result -->
-            <div data-aos="fade-left" data-aos-delay="300" class="card-luxury mt-8 bg-white rounded-3xl shadow-xl border border-amber-200 p-6 md:p-8">
+            <div data-aos="fade-left" data-aos-delay="300" class="card-luxury bg-white rounded-3xl shadow-xl border border-amber-200 p-6 md:p-8">
                 <h3 class="text-xl font-extrabold text-bpjs-dark mb-4 flex items-center gap-2">
                     <i class="ph-fill ph-star text-amber-400"></i>
                     Penilaian Anda
