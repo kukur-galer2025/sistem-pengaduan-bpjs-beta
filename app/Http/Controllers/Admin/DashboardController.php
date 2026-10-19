@@ -24,7 +24,11 @@ class DashboardController extends Controller
             ->get();
 
         // Data Grafik: Tren Bulanan
-        $monthlyTrends = Complaint::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+        $monthExpr = \Illuminate\Support\Facades\DB::getDriverName() === 'sqlite'
+            ? 'CAST(strftime("%m", created_at) AS INTEGER) as month, COUNT(*) as count'
+            : 'MONTH(created_at) as month, COUNT(*) as count';
+
+        $monthlyTrends = Complaint::selectRaw($monthExpr)
             ->whereYear('created_at', date('Y'))
             ->groupBy('month')
             ->orderBy('month')
