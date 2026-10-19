@@ -6,6 +6,7 @@ use App\Http\Controllers\ComplaintController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ComplaintManagementController;
 use App\Http\Controllers\Admin\CategoryController; // Tambahkan import ini
+use App\Http\Controllers\ProfileController;
 use App\Http\Middleware\AdminMiddleware; 
 
 // Halaman Utama / Landing Page
@@ -41,6 +42,10 @@ Route::middleware('auth')->group(function () {
         auth()->user()->unreadNotifications->markAsRead();
         return back();
     })->name('notifications.markAllRead');
+
+    // Route untuk Profil Pengguna
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
     // ------------------------------------------
     // AREA PELAPOR (Masyarakat)

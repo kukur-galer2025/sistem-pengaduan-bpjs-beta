@@ -120,7 +120,7 @@
                                         <p class="text-sm font-bold text-bpjs-dark truncate">{{ Auth::user()->email }}</p>
                                     </div>
 
-                                    <a href="#" class="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-gray-600 hover:bg-slate-50 hover:text-bpjs-blue transition">
+                                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-5 py-2.5 text-sm font-bold text-gray-600 hover:bg-slate-50 hover:text-bpjs-blue transition">
                                         <i class="ph-fill ph-user-gear text-lg text-gray-400"></i> Edit Profil
                                     </a>
                                     
@@ -163,6 +163,9 @@
             @auth
                 <a href="{{ route('pengaduan.index') }}" class="flex items-center gap-4 text-lg font-bold text-gray-600 hover:text-bpjs-blue transition">
                     <i class="ph-fill ph-clock-counter-clockwise text-3xl text-bpjs-teal"></i> Riwayat Laporan
+                </a>
+                <a href="{{ route('profile.edit') }}" class="flex items-center gap-4 text-lg font-bold text-gray-600 hover:text-bpjs-blue transition">
+                    <i class="ph-fill ph-user-gear text-3xl text-bpjs-teal"></i> Edit Profil
                 </a>
             @endauth
             <a href="{{ route('faq.public') }}" class="flex items-center gap-4 text-lg font-bold text-gray-600 hover:text-bpjs-blue transition">
