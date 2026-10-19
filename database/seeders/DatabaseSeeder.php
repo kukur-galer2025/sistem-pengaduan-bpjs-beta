@@ -62,10 +62,9 @@ class DatabaseSeeder extends Seeder
         $kategori2 = Category::where('nama_kategori', 'Administrasi & Iuran')->first();
 
         // Tiket 1: Status Selesai
-        $complaint1 = \App\Models\Complaint::create([
+        $complaint1 = \App\Models\Complaint::firstOrCreate(['kode_tiket' => 'BPJS-20260523-ABCD'], [
             'user_id' => $pelapor->id,
             'category_id' => $kategori1->id,
-            'kode_tiket' => 'BPJS-20260523-ABCD',
             'judul' => 'Antrean di Klinik Sehat Terlalu Lama',
             'kronologi' => 'Saya datang jam 7 pagi namun baru dilayani jam 1 siang padahal antrean tidak terlalu banyak.',
             'status' => 'selesai',
@@ -73,62 +72,65 @@ class DatabaseSeeder extends Seeder
             'rating_review' => 'Terima kasih atas tanggapan cepatnya. Semoga pelayanan klinik bisa ditingkatkan.'
         ]);
 
-        \App\Models\ComplaintHistory::create([
-            'complaint_id' => $complaint1->id,
-            'petugas_id' => null,
-            'status' => 'menunggu',
-            'catatan' => 'Pengaduan berhasil dibuat dan sedang menunggu verifikasi petugas.',
-        ]);
+        if ($complaint1->wasRecentlyCreated) {
+            \App\Models\ComplaintHistory::create([
+                'complaint_id' => $complaint1->id,
+                'petugas_id' => null,
+                'status' => 'menunggu',
+                'catatan' => 'Pengaduan berhasil dibuat dan sedang menunggu verifikasi petugas.',
+            ]);
 
-        \App\Models\ComplaintHistory::create([
-            'complaint_id' => $complaint1->id,
-            'petugas_id' => $admin->id,
-            'status' => 'diproses',
-            'catatan' => 'Laporan sedang kami verifikasi ke pihak Klinik Sehat.',
-        ]);
+            \App\Models\ComplaintHistory::create([
+                'complaint_id' => $complaint1->id,
+                'petugas_id' => $admin->id,
+                'status' => 'diproses',
+                'catatan' => 'Laporan sedang kami verifikasi ke pihak Klinik Sehat.',
+            ]);
 
-        \App\Models\ComplaintHistory::create([
-            'complaint_id' => $complaint1->id,
-            'petugas_id' => $admin->id,
-            'status' => 'selesai',
-            'catatan' => 'Pihak klinik telah diberikan teguran dan akan melakukan evaluasi sistem antrean. Laporan ditutup.',
-        ]);
+            \App\Models\ComplaintHistory::create([
+                'complaint_id' => $complaint1->id,
+                'petugas_id' => $admin->id,
+                'status' => 'selesai',
+                'catatan' => 'Pihak klinik telah diberikan teguran dan akan melakukan evaluasi sistem antrean. Laporan ditutup.',
+            ]);
+        }
 
         // Tiket 2: Status Diproses
-        $complaint2 = \App\Models\Complaint::create([
+        $complaint2 = \App\Models\Complaint::firstOrCreate(['kode_tiket' => 'BPJS-20260523-XYZ1'], [
             'user_id' => $pelapor->id,
             'category_id' => $kategori2->id,
-            'kode_tiket' => 'BPJS-20260523-XYZ1',
             'judul' => 'Status Kepesertaan Non-Aktif',
             'kronologi' => 'Saya sudah membayar iuran bulan ini, namun status kepesertaan di Mobile JKN masih non-aktif. Mohon bantuannya.',
             'status' => 'diproses',
         ]);
 
-        \App\Models\ComplaintHistory::create([
-            'complaint_id' => $complaint2->id,
-            'petugas_id' => null,
-            'status' => 'menunggu',
-            'catatan' => 'Pengaduan berhasil dibuat dan sedang menunggu verifikasi petugas.',
-        ]);
+        if ($complaint2->wasRecentlyCreated) {
+            \App\Models\ComplaintHistory::create([
+                'complaint_id' => $complaint2->id,
+                'petugas_id' => null,
+                'status' => 'menunggu',
+                'catatan' => 'Pengaduan berhasil dibuat dan sedang menunggu verifikasi petugas.',
+            ]);
 
-        \App\Models\ComplaintHistory::create([
-            'complaint_id' => $complaint2->id,
-            'petugas_id' => $admin->id,
-            'status' => 'diproses',
-            'catatan' => 'Kami sedang melakukan pengecekan mutasi pembayaran pada sistem. Mohon menunggu.',
-        ]);
+            \App\Models\ComplaintHistory::create([
+                'complaint_id' => $complaint2->id,
+                'petugas_id' => $admin->id,
+                'status' => 'diproses',
+                'catatan' => 'Kami sedang melakukan pengecekan mutasi pembayaran pada sistem. Mohon menunggu.',
+            ]);
 
-        // Sample Komentar Diskusi Tiket 2
-        \App\Models\TicketComment::create([
-            'complaint_id' => $complaint2->id,
-            'user_id' => $admin->id,
-            'body' => 'Halo Bapak Budi, bisakah Anda melampirkan bukti transfer pembayaran bulan ini?'
-        ]);
-        
-        \App\Models\TicketComment::create([
-            'complaint_id' => $complaint2->id,
-            'user_id' => $pelapor->id,
-            'body' => 'Baik, tunggu sebentar saya carikan buktinya ya pak.'
-        ]);
+            // Sample Komentar Diskusi Tiket 2
+            \App\Models\TicketComment::create([
+                'complaint_id' => $complaint2->id,
+                'user_id' => $admin->id,
+                'body' => 'Halo Bapak Budi, bisakah Anda melampirkan bukti transfer pembayaran bulan ini?'
+            ]);
+            
+            \App\Models\TicketComment::create([
+                'complaint_id' => $complaint2->id,
+                'user_id' => $pelapor->id,
+                'body' => 'Baik, tunggu sebentar saya carikan buktinya ya pak.'
+            ]);
+        }
     }
 }
